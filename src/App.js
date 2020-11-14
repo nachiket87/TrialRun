@@ -8,6 +8,7 @@ const App = () => {
   const [portfolio, setPortfolio] = React.useState();
   let portfoliovalue = 0;
   if (portfolio) portfoliovalue = calcTotal(portfolio, "all");
+  console.log(portfoliovalue);
 
   const ratesUrl =
     "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
