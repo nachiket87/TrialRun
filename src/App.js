@@ -1,8 +1,13 @@
 import React from "react";
 import getData from "./utilities/FetchData";
+import Chart from "./components/LineChart";
+import calcTotal from "./utilities/CaculateTotal";
 
-function App() {
-  const [da, setDa] = React.useState({});
+const App = () => {
+  const [rates, setRates] = React.useState();
+  const [portfolio, setPortfolio] = React.useState();
+  let portfoliovalue = 0;
+  if (portfolio) portfoliovalue = calcTotal(portfolio, "all");
 
   const ratesUrl =
     "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
@@ -10,24 +15,24 @@ function App() {
     "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
 
   React.useEffect(() => {
-    getData(setDa, ratesUrl, portURL);
+    getData(setRates, ratesUrl);
+    getData(setPortfolio, portURL);
   }, []);
 
-  const calculateValue = (port) => {
-    const total = port.reduce((sum, item) => {
-      return (sum += item.amount);
-    }, 0);
-    setDa({ total: total });
-  };
-  if (da.portfolio) {
-    calculateValue(da.portfolio.data);
-  }
-
   return (
-    <div>
-      <h1> Current Portfolio Value: {da ? `${da.total}` : `fetching`}</h1>
-    </div>
+    <>
+      <h1>
+        {" "}
+        Current Portfolio Value:{" "}
+        {portfolio
+          ? `${Math.round(portfoliovalue)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+          : `fetching`}
+      </h1>
+      <Chart portfolio={portfolio} setport={setPortfolio} />
+    </>
   );
-}
+};
 
 export default App;
