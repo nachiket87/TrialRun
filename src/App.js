@@ -1,23 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import getData from "./utilities/FetchData";
 
 function App() {
+  const [da, setDa] = React.useState({});
+
+  const ratesUrl =
+    "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
+  const portURL =
+    "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
+
+  React.useEffect(() => {
+    getData(setDa, ratesUrl, portURL);
+  }, []);
+
+  const calculateValue = (port) => {
+    const total = port.reduce((sum, item) => {
+      return (sum += item.amount);
+    }, 0);
+    setDa({ total: total });
+  };
+  if (da.portfolio) {
+    calculateValue(da.portfolio.data);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1> Current Portfolio Value: {da ? `${da.total}` : `fetching`}</h1>
     </div>
   );
 }
