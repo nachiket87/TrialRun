@@ -1,5 +1,5 @@
 const calcTotal = (portfolio, year) => {
-  const transactions = portfolio.data;
+  const transactions = [...portfolio];
   let total = 0;
   for (let i = 0; i < transactions.length; i++) {
     const currentTransDate = new Date(transactions[i].createdAt);

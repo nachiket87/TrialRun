@@ -1,6 +1,6 @@
 import React from "react";
 import Chart from "./components/LineChart";
-//import calcTotal from "./utilities/CaculateTotal";
+import calcTotal from "./utilities/CaculateTotal";
 import "./global.css";
 import fetchData from "./utilities/FetchData";
 
@@ -10,19 +10,16 @@ const PORT_URL =
   "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
 
 const App = () => {
-  const [rates, setRates] = React.useState([
-    { pair: null, midMarketRate: null, createdAt: null },
-  ]);
-  const [portfolio, setPortfolio] = React.useState([
-    { amount: 0, createdAt: null, currency: null, from: null, type: null },
-  ]);
+  const [rates, setRates] = React.useState();
+  const [portfolio, setPortfolio] = React.useState();
+  let portfolioValue = 0;
+  if (portfolio) portfolioValue = calcTotal(portfolio, "all");
 
   React.useEffect(() => {
     fetchData(PORT_URL, setPortfolio);
     fetchData(RATES_URL, setRates);
   }, []);
-
-  console.log(rates);
+  console.log(portfolio);
 
   return (
     <div className="container">
@@ -30,7 +27,7 @@ const App = () => {
         {" "}
         Current Portfolio Value:{" "}
         {portfolio
-          ? `${Math.round(1000000)
+          ? `${Math.round(portfolioValue)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
           : `fetching`}
