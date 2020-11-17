@@ -4,36 +4,46 @@ import calcTotal from "./utilities/CaculateTotal";
 import "./global.css";
 import fetchData from "./utilities/FetchData";
 
-const RATES_URL =
+const BTC_RATE_URL =
   "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
+const ETH_RATE_URL =
+  "https://shakepay.github.io/programming-exercise/web/rates_CAD_ETH.json";
 const PORT_URL =
   "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
 
 const App = () => {
-  const [rates, setRates] = React.useState();
+  const [data, setData] = React.useState();
   const [portfolio, setPortfolio] = React.useState();
   let portfolioValue = 0;
-  if (portfolio) portfolioValue = calcTotal(portfolio, "all");
+  if (data) portfolioValue = calcTotal(data, "all");
 
   React.useEffect(() => {
-    fetchData(PORT_URL, setPortfolio);
-    fetchData(RATES_URL, setRates);
+    const callAPI = (url) => fetch(url).then((res) => res.json());
+
+    Promise.all([
+      callAPI(BTC_RATE_URL),
+      callAPI(ETH_RATE_URL),
+      callAPI(PORT_URL),
+    ])
+      .then((res) => {
+        setData({ BTC_rate: res[0], ETH_rate: res[1], transactions: res[2] });
+      })
+      .catch((err) => console.log("whoops: ", err));
   }, []);
-  console.log(portfolio);
 
   return (
     <div className="container">
       <h1>
         {" "}
         Current Portfolio Value:{" "}
-        {portfolio
+        {data
           ? `${Math.round(portfolioValue)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
           : `fetching`}
       </h1>
       <div className="chart">
-        <Chart portfolio={portfolio} setport={setPortfolio} />
+        <Chart portfolio={portfolio} setport={setData} />
       </div>
     </div>
   );

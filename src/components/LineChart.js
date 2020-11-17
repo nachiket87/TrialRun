@@ -6,7 +6,7 @@ const Chart = (props) => {
     data: [
       {
         createdAt: "2020-04-20T15:49:57.741Z",
-        amount: 100,
+        amount: 100000,
         currency: "BTC",
         type: "external account",
         direction: "credit",
@@ -14,7 +14,7 @@ const Chart = (props) => {
       },
     ],
   };
-  const setPort = props.setport;
+  const setData = props.setport;
   const data = {
     labels: [2018, 2019, 2020],
     datasets: [
@@ -27,7 +27,6 @@ const Chart = (props) => {
   return (
     <>
       <div>
-        <button onClick={() => setPort(test)}> click me </button>
         <Line
           data={data}
           options={{
