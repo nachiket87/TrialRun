@@ -1,33 +1,52 @@
 import React from "react";
-import getData from "./utilities/FetchData";
+import Chart from "./components/LineChart";
+import calcTotal from "./utilities/CaculateTotal";
+import "./global.css";
 
-function App() {
-  const [da, setDa] = React.useState({});
+const BTC_RATE_URL =
+  "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
 
-  const ratesUrl =
-    "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
-  const portURL =
-    "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
+const ETH_RATE_URL =
+  "https://shakepay.github.io/programming-exercise/web/rates_CAD_ETH.json";
+const PORT_URL =
+  "https://shakepay.github.io/programming-exercise/web/transaction_history.json";
+
+const App = () => {
+  const [data, setData] = React.useState();
+  const [portfolio, setPortfolio] = React.useState();
+  let portfolioValue = 0;
+  if (data) portfolioValue = calcTotal(data, "all");
 
   React.useEffect(() => {
-    getData(setDa, ratesUrl, portURL);
+    const callAPI = (url) => fetch(url).then((res) => res.json());
+
+    Promise.all([
+      callAPI(BTC_RATE_URL),
+      callAPI(ETH_RATE_URL),
+      callAPI(PORT_URL),
+    ])
+      .then((res) => {
+        setData({ BTC_rate: res[0], ETH_rate: res[1], transactions: res[2] });
+      })
+      .catch((err) => console.log("whoops: ", err));
   }, []);
 
-  const calculateValue = (port) => {
-    const total = port.reduce((sum, item) => {
-      return (sum += item.amount);
-    }, 0);
-    setDa({ total: total });
-  };
-  if (da.portfolio) {
-    calculateValue(da.portfolio.data);
-  }
-
   return (
-    <div>
-      <h1> Current Portfolio Value: {da ? `${da.total}` : `fetching`}</h1>
+    <div className="container">
+      <h1>
+        {" "}
+        Current Portfolio Value:{" "}
+        {data
+          ? `${Math.round(portfolioValue)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
+          : `fetching`}
+      </h1>
+      <div className="chart">
+        <Chart portfolio={portfolio} setport={setData} />
+      </div>
     </div>
   );
-}
+};
 
 export default App;

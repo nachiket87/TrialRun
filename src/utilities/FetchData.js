@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const getData = async (setDa, url, portURL) => {
-  await axios.get(url).then((data) => setDa({ rates: data }));
-  await axios.get(portURL).then((data) => setDa({ portfolio: data }));
-};
+async function fetchData(url, setData) {
+  let request = await axios.get(url);
+  await setData(request.data);
+  return request.data;
+}
 
-export default getData;
+export default fetchData;
