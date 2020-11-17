@@ -1,6 +1,5 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
-import calcTotal from "../utilities/CaculateTotal";
 
 const Chart = (props) => {
   const test = {
@@ -21,11 +20,6 @@ const Chart = (props) => {
     datasets: [
       {
         label: "Portfolio Value",
-        data: [
-          props.portfolio ? Math.round(calcTotal(props.portfolio, 2018)) : 100,
-          props.portfolio ? Math.round(calcTotal(props.portfolio, 2019)) : 100,
-          props.portfolio ? Math.round(calcTotal(props.portfolio, 2020)) : 100,
-        ],
       },
     ],
   };
@@ -42,7 +36,7 @@ const Chart = (props) => {
                 //console.log(x[0]._chart.getElementAtEvent(e)[0]);
                 const a = x[0]._chart.getElementAtEvent(e)[0]._index;
                 console.log(data.labels[a]);
-                const yearToRemake = data.labels[a];
+                //const yearToRemake = data.labels[a];
                 console.log(data.datasets[0].data[a]);
               }
             },

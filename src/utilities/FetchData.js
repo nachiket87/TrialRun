@@ -1,7 +1,9 @@
 import axios from "axios";
 
-const getData = async (setData, url) => {
-  await axios.get(url).then((data) => setData(data));
-};
+async function fetchData(url, setData) {
+  let request = await axios.get(url);
+  setData(request.data);
+  return request;
+}
 
-export default getData;
+export default fetchData;

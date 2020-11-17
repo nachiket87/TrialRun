@@ -8,6 +8,7 @@ const calcTotal = (portfolio, year) => {
       switch (transactions[i].direction) {
         case "credit":
           total += btcConvertor(transactions[i]);
+
           break;
         case "debit":
           total -= btcConvertor(transactions[i]);
