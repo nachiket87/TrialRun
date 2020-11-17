@@ -5,7 +5,6 @@ import "./global.css";
 
 const BTC_RATE_URL =
   "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
-
 const ETH_RATE_URL =
   "https://shakepay.github.io/programming-exercise/web/rates_CAD_ETH.json";
 const PORT_URL =
