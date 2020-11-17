@@ -1,77 +1,84 @@
-const calcTotal = (data, year) => {
+const calcTotal = (data) => {
+  let totals = { CAD_Total: 0, BTC_Total: 0, ETH_Total: 0 };
+  let finalValue = 0;
   const { BTC_rate, ETH_rate, transactions } = data;
-
-  let total = 0;
+  const BTC_reversed = [...BTC_rate].reverse();
+  const ETH_reversed = [...ETH_rate].reverse();
 
   for (let i = 0; i < transactions.length; i++) {
-    const currentTransDate = new Date(transactions[i].createdAt);
-    const yearinNumber = currentTransDate.getFullYear();
-    if (yearinNumber <= year || year === "all") {
-      switch (transactions[i].direction) {
-        case "credit":
-          total += btcConvertor(transactions[i], ETH_rate, BTC_rate);
-          break;
-        case "debit":
-          total -= btcConvertor(transactions[i], ETH_rate, BTC_rate);
-          break;
-        default:
-          break;
-      }
+    switch (transactions[i].direction) {
+      case "credit":
+        if (transactions[i].currency === "BTC")
+          totals.BTC_Total += parseFloat(transactions[i].amount);
+        else if (transactions[i].currency === "ETH")
+          totals.ETH_Total += parseFloat(transactions[i].amount);
+        else totals.CAD_Total += parseFloat(transactions[i].amount);
+        break;
+      case "debit":
+        if (transactions[i].currency === "BTC")
+          totals.BTC_Total += parseFloat(transactions[i].amount);
+        else if (transactions[i].currency === "ETH")
+          totals.ETH_Total += parseFloat(transactions[i].amount);
+        else totals.CAD_Total += parseFloat(transactions[i].amount);
+        break;
+      default:
+        if (transactions[i].to.currency === "BTC")
+          totals.BTC_Total += parseFloat(transactions[i].to.amount);
+        else if (transactions[i].to.currency === "ETH")
+          totals.ETH_Total += parseFloat(transactions[i].to.amount);
+        if (transactions[i].to.currency === "CAD")
+          totals.CAD_Total += parseFloat(transactions[i].to.amount);
+
+        break;
     }
   }
-  return total;
+  finalValue =
+    totals.CAD_Total +
+    totals.BTC_Total * BTC_reversed[0].midMarketRate +
+    totals.ETH_Total * ETH_reversed[0].midMarketRate;
+  console.log(totals);
+  return finalValue;
 };
-const checkRate = (transaction, rate) => {
-  if (!transaction) {
-    return 0;
-  }
-  const transactionDate = new Date(transaction.createdAt);
-  const target = transactionDate.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+
+// you will need checkRate function later
+/* const checkRate = (transaction, rate) => {
+  const target = transaction.createdAt;
 
   let floorIndex = -1;
   let ceilingIndex = rate.length - 1;
   let lastIndexChecked = 0;
 
   while (floorIndex + 1 < ceilingIndex) {
-    // Find the index ~halfway between the floor and ceiling
-    // We have to round down, to avoid getting a "half index"
+    // Binary Search to find matching date.
     const distance = ceilingIndex - floorIndex;
     const halfDistance = Math.floor(distance / 2);
     const guessIndex = floorIndex + halfDistance;
-    const guessDate = new Date(rate[guessIndex].createdAt);
-    const guessValue = guessDate.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    const guessValue = rate[guessIndex].createdAt;
     if (guessValue === target) {
       return rate[guessIndex].midMarketRate;
-    } else if (guessDate > transactionDate) {
+    } else if (guessValue > target) {
       ceilingIndex = guessIndex;
-    } else if (guessDate < transactionDate) {
+    } else if (guessValue < target) {
       floorIndex = guessIndex;
     }
     lastIndexChecked = guessIndex;
   }
   return rate[lastIndexChecked].midMarketRate;
-};
+}; */
 
-const btcConvertor = (transaction, ETH_rate, BTC_rate) => {
+/* const btcConvertor = (transaction, ETH_rate, BTC_rate) => {
   switch (transaction.currency) {
     case "BTC":
-      return parseFloat(transaction.amount) * checkRate(transaction, BTC_rate);
+      const amount =
+        parseFloat(transaction.amount) * checkRate(transaction, BTC_rate);
+      return amount;
     case "CAD":
       return parseFloat(transaction.amount);
     case "ETH":
       return parseFloat(transaction.amount) * checkRate(transaction, ETH_rate);
-
     default:
       break;
   }
-};
+}; */
 
 export default calcTotal;
