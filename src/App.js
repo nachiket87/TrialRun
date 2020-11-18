@@ -5,7 +5,6 @@ import "./global.css";
 
 const BTC_RATE_URL =
   "https://shakepay.github.io/programming-exercise/web/rates_CAD_BTC.json";
-
 const ETH_RATE_URL =
   "https://shakepay.github.io/programming-exercise/web/rates_CAD_ETH.json";
 const PORT_URL =
@@ -13,9 +12,7 @@ const PORT_URL =
 
 const App = () => {
   const [data, setData] = React.useState();
-  const [portfolio, setPortfolio] = React.useState();
   let portfolioValue = 0;
-  if (data) portfolioValue = calcTotal(data, "all");
 
   React.useEffect(() => {
     const callAPI = (url) => fetch(url).then((res) => res.json());
@@ -26,10 +23,17 @@ const App = () => {
       callAPI(PORT_URL),
     ])
       .then((res) => {
-        setData({ BTC_rate: res[0], ETH_rate: res[1], transactions: res[2] });
+        setData({
+          BTC_rate: res[0],
+          ETH_rate: res[1],
+          transactions: res[2],
+        });
       })
       .catch((err) => console.log("whoops: ", err));
   }, []);
+  if (data) {
+    portfolioValue = calcTotal(data);
+  }
 
   return (
     <div className="container">
@@ -43,7 +47,7 @@ const App = () => {
           : `fetching`}
       </h1>
       <div className="chart">
-        <Chart portfolio={portfolio} setport={setData} />
+        <Chart transactions={data} />
       </div>
     </div>
   );
