@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700&display=swap");
 .container {
   display: flex;
   flex-direction: column;
@@ -5,4 +6,8 @@
 }
 .chart {
   width: 75vw;
+}
+
+.motto {
+  font-family: "Big Shoulders Stencil Display", cursive;
 }

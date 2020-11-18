@@ -47,7 +47,15 @@ const App = () => {
           : `fetching`}
       </h1>
       <div className="chart">
-        <Chart transactions={data} />
+        <Chart transactions={data} setportfolio={setData} />
+      </div>
+      <div
+        className="motto"
+        style={{ marginTop: "2rem", fontSize: "72px", textAlign: "center" }}
+      >
+        STRIKE FIRST
+        <br /> STRIKE HARD
+        <br /> NO MERCY
       </div>
     </div>
   );

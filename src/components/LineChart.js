@@ -3,9 +3,11 @@ import { Line } from "react-chartjs-2";
 import calcTotal from "../utilities/CaculateTotal";
 
 const Chart = (props) => {
+  const [currentPV, setPV] = React.useState({});
   let transactions = [];
   let BTC_rate = [];
   let ETH_rate = [];
+  const setData = props.setportfolio;
   if (props.transactions) {
     transactions = props.transactions.transactions;
     BTC_rate = props.transactions.BTC_rate;
@@ -53,11 +55,20 @@ const Chart = (props) => {
                 const a = x[0]._chart.getElementAtEvent(e)[0]._index;
                 console.log(data.labels[a]);
                 console.log(data.datasets[0].data[a]);
+                setPV({
+                  date: data.labels[a],
+                  value: data.datasets[0].data[a],
+                });
               }
             },
             tooltips: { labelColor: "black" },
           }}
         />
+      </div>
+      <div className="container" style={{ marginTop: "3rem" }}>
+        {currentPV.value
+          ? `Portfolio Value on ${currentPV.date}: ${currentPV.value}`
+          : ``}
       </div>
     </>
   );
