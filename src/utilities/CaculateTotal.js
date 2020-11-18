@@ -2,8 +2,6 @@ const calcTotal = (data) => {
   let totals = { CAD_Total: 0, BTC_Total: 0, ETH_Total: 0 };
   let finalValue = 0;
   const { BTC_rate, ETH_rate, transactions } = data;
-  const BTC_reversed = [...BTC_rate].reverse();
-  const ETH_reversed = [...ETH_rate].reverse();
 
   for (let i = 0; i < transactions.length; i++) {
     switch (transactions[i].direction) {
@@ -34,14 +32,13 @@ const calcTotal = (data) => {
   }
   finalValue =
     totals.CAD_Total +
-    totals.BTC_Total * BTC_reversed[0].midMarketRate +
-    totals.ETH_Total * ETH_reversed[0].midMarketRate;
-  console.log(totals);
-  return finalValue;
+    totals.BTC_Total * checkRate(transactions[0], BTC_rate) +
+    totals.ETH_Total * checkRate(transactions[0], ETH_rate);
+  return Math.round(finalValue);
 };
 
 // you will need checkRate function later
-/* const checkRate = (transaction, rate) => {
+const checkRate = (transaction, rate) => {
   const target = transaction.createdAt;
 
   let floorIndex = -1;
@@ -58,13 +55,14 @@ const calcTotal = (data) => {
       return rate[guessIndex].midMarketRate;
     } else if (guessValue > target) {
       ceilingIndex = guessIndex;
+      lastIndexChecked = guessIndex + 1;
     } else if (guessValue < target) {
       floorIndex = guessIndex;
+      lastIndexChecked = guessIndex;
     }
-    lastIndexChecked = guessIndex;
   }
   return rate[lastIndexChecked].midMarketRate;
-}; */
+};
 
 /* const btcConvertor = (transaction, ETH_rate, BTC_rate) => {
   switch (transaction.currency) {

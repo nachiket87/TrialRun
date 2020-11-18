@@ -47,7 +47,7 @@ const App = () => {
           : `fetching`}
       </h1>
       <div className="chart">
-        <Chart portfolioValue={portfolioValue} />
+        <Chart transactions={data} />
       </div>
     </div>
   );
