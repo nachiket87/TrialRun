@@ -1,5 +1,6 @@
 import React from "react";
 import Chart from "./components/LineChart";
+import Portfolio from "./components/Portfolio";
 import calcTotal from "./utilities/CaculateTotal";
 import "./global.css";
 
@@ -38,13 +39,7 @@ const App = () => {
   return (
     <div className="container">
       <h1>
-        {" "}
-        Current Portfolio Value:{" "}
-        {data
-          ? `${Math.round(portfolioValue)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-          : `fetching`}
+        <Portfolio portfolioValue={data ? portfolioValue : `fetching`} />
       </h1>
       <div className="chart">
         <Chart transactions={data} setportfolio={setData} />
